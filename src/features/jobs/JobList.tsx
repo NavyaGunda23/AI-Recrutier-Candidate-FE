@@ -47,10 +47,10 @@ const JobList: React.FC = () => {
   const fetchRecords = async () => {
     try {
       const response = await fetch(
-        'https://api.airtable.com/v0/appeH3LWtVbw0DDIv/Job%20Openings',
+        'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblAz9PFQthvbxaHu',
         {
           headers: {
-            Authorization: `Bearer pate5F34PFXKdUFUU.2849c608f23ec107a0cc07b3fc92c2031e37f1b28c68026d23475ddd9bb1d9ae` ,// or hardcoded if local testing
+            Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
             'Content-Type': 'application/json'
           }
         }
@@ -67,7 +67,7 @@ const JobList: React.FC = () => {
         id: record.id,
         title: record.fields.Position || '',
         location: record.fields.Location || '',
-        salary: record.fields.salary || '',
+        salary: record.fields.Salary || '',
         type: record.fields["Onsite/Remote"] || '',
         oneDriveFolderID:record.fields.oneDriveFolderID || ""
       }));
