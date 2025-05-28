@@ -90,7 +90,7 @@ const JobCreate: React.FC = () => {
 
     try {
       setUploadStatus('Uploading...');
-      const response = await fetch('http://localhost:5172/api/upload-to-created-folder', {
+      const response = await fetch('https://ai-recruiter-candidate.vercel.app/api/upload-to-created-folder', {
         method: 'POST',
         body: formData
       });
