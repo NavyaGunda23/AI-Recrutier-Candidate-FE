@@ -90,7 +90,8 @@ const JobCreate: React.FC = () => {
 
     try {
       setUploadStatus('Uploading...');
-      const response = await fetch('https://ai-recruiter-candidate.vercel.app/api/upload-to-created-folder', {
+      // 'https://innova-recruiter-candidate.darkube.app
+      const response = await fetch('https://innova-recruiter-candidate.darkube.app/api/upload-to-created-folder', {
         method: 'POST',
         body: formData
       });
