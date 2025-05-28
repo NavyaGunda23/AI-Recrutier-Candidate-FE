@@ -91,7 +91,7 @@ const JobCreate: React.FC = () => {
     try {
       setUploadStatus('Uploading...');
       // 'https://innova-recruiter-candidate.darkube.app
-      const response = await fetch('https://innova-recruiter-candidate.darkube.app/api/upload-to-created-folder', {
+      const response = await fetch('https://innova-recruiter-web.darkube.app/api/upload-to-created-folder', {
         method: 'POST',
         body: formData
       });
