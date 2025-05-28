@@ -24,6 +24,8 @@ const AppRoutes: React.FC = () => (
             <MainLayout />
           }
         >
+           {/* Redirect from "/" to "/jobs/list" */}
+           <Route index element={<Navigate to="jobs/list" replace />} />
          
           <Route path="jobs">
             <Route path="list" element={<JobList />} />
@@ -37,7 +39,6 @@ const AppRoutes: React.FC = () => (
   <Route path=":id/call-insights" element={<CallInsightView />} />
 </Route>
         </Route>
-        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </React.Suspense>
   </BrowserRouter>
