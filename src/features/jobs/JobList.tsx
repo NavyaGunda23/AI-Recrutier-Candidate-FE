@@ -66,9 +66,9 @@ const JobList: React.FC = () => {
       const jobs = data.records.map((record:any) => ({
         id: record.id,
         title: record.fields.Position || '',
-        location: record.fields.Location || '',
+        location: record.fields.Location.join(' ') || '',
         salary: record.fields.Salary || '',
-        type: record.fields["Onsite/Remote"] || '',
+        type: record.fields["Onsite/Remote"].join(' ') || '',
         oneDriveFolderID:record.fields.oneDriveFolderID || ""
       }));
   
