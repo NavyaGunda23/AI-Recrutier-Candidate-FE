@@ -87,40 +87,41 @@ const JobList: React.FC = () => {
   }, []);
 
   return (
-    <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 }, fontFamily: `'Montserrat', sans-serif` }}>
+    <Box sx={{ background: '#F4F2EE', minHeight: '100vh', p: { xs: 2, md: 2 }, fontFamily: `'Montserrat', sans-serif` }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
     
-        <Typography sx={{ color: 'white', fontWeight: 600, fontSize: 28 }}>
+        <Typography sx={{ color: '#000', fontWeight: 600, fontSize: 28 }}>
           Job List
         </Typography>
       
       </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, justifyContent: 'flex-start', alignItems: 'flex-start', mt: 4 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr' }, gap: 5, justifyContent: 'flex-start', alignItems: 'flex-start', mt: 4 }}>
        {records.length  == 0  && <p style={{color:"white"}}>No jobs created</p>}
         {records.map((job:any) => (
           <GradientCard
             key={job.id}
-            gradient="linear-gradient(180deg, #36638E 0%, #4C247E 100%)"
+            gradient="linear-gradient(180deg, #fff 0%, #fff 100%)"
             sx={{ borderRadius: 2, boxShadow: 6, p: 1, minWidth: 320,  minHeight: 200, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
           >
-            <Box sx={{display:"flex",gap:"10px",flexDirection:"column"}}>
-              <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 20, mb: 1 }}>
+            <Box sx={{display:"flex",gap:"10px",flexDirection:"row"}}>
+              <Typography sx={{ color: '#000', fontWeight: 700, fontSize: 20,  }}>
                 {job.title}
               </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', opacity: 0.85, mb: 0.5, fontSize: 15 }}>
+             
+              <Chip label={job.type} sx={{ background: '#F1E0FF', width:"fit-content",color: '#6300B3', fontWeight: 600, fontSize: 14, borderRadius: 1,  }} />
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', color: '#000', opacity: 0.85, mb: 0.5, fontSize: 15,mt:1 }}>
                 <LocationOnIcon sx={{ fontSize: 18, mr: 0.5 }} />
                 {job.location}
               </Box>
-              <Typography sx={{ color: 'white', opacity: 0.85, fontSize: 15, mb: 1 }}>
+              <Typography sx={{ color: '#000', opacity: 0.85, fontSize: 15, mb: 1 }}>
                 Salary: {job.salary}
               </Typography>
-              <Chip label={job.type} sx={{ background: '#F1E0FF', width:"fit-content",color: '#6300B3', fontWeight: 600, fontSize: 14, borderRadius: 1, mb: 2 }} />
-            </Box>
             <Button
               variant="outlined"
               sx={{
-                color: 'white',
-                borderColor: 'white',
+                color: '#000',
+                borderColor: '#000',
                 fontWeight: 600,
                 borderRadius: 2,
                 px: 3,
@@ -129,6 +130,7 @@ const JobList: React.FC = () => {
                 textTransform: 'none',
                 fontFamily: 'Montserrat',
                 mt: 2,
+               
                 width:"fit-content",
                 '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
               }}

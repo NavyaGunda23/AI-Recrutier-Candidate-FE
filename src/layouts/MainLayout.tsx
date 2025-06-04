@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/app/authSlice';
 import type { RootState } from '@/app/store';
 import Innovasenslogo from "@/assets/innovasense.png";
+
+import LinkeDIn from "@/assets/linked-logo.png"
 import JobsImg from "@/assets/jobs.png";
 import LogoutImg from '@/assets/logput.png';
 
@@ -35,14 +37,14 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#171717' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F4F2EE' }}>
       <CssBaseline />
 
       {/* Top AppBar */}
-      <AppBar position="static" sx={{ backgroundColor: '#1F2039', fontFamily: `'Montserrat', sans-serif` }}>
+      <AppBar position="static" sx={{ backgroundColor: '#fff', fontFamily: `'Montserrat', sans-serif` }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <img src={Innovasenslogo} alt="Innovasense Logo" style={{ height: 24 }} onClick={()=> navigate("/jobs/list")} />
+            <img src={LinkeDIn} alt="Innovasense Logo" style={{ width: 100 }} onClick={()=> navigate("/jobs/list")} />
          
           </Box>
 

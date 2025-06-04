@@ -28,8 +28,8 @@ const initialValues = {
 
 
 const gradientInputSx = {
-  background: 'linear-gradient(90deg, #336A87 0%, #4C257E 100%)',
-  color: 'white',
+  background: 'linear-gradient(90deg, #fff 0%, #fff 100%)',
+  color: '#000',
   borderRadius: 2,
   border: 'none',
   fontWeight: 400,
@@ -48,18 +48,18 @@ const gradientInputSx = {
   },
   
   '& .MuiInputBase-input': {
-    color: 'white',
+    color: '#000',
   },
   
   '& .MuiInputLabel-root': {
-    color: 'white',
+    color: '#000',
   },
   '& .MuiSelect-icon': {
-    color: 'white',
+    color: '#000',
   },
   '& .MuiChip-root': {
     background: '#2d2363',
-    color: 'white',
+    color: '#000',
     fontWeight: 700,
     fontSize: 14,
     borderRadius: 2,
@@ -117,7 +117,7 @@ const JobCreate: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 1 }, fontFamily: `'Montserrat', sans-serif` }}>
-      <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 4, fontFamily: 'Montserrat' }}>
+      <Typography sx={{ color: '#000', fontWeight: 400, fontSize: 20, mb: 4, fontFamily: 'Montserrat' }}>
         Create a New job
       </Typography>
       <Formik
@@ -192,7 +192,7 @@ const JobCreate: React.FC = () => {
               gap: 4,
             }}>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Candidate Name</Typography>
+                <Typography sx={{ color: '#000', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Candidate Name</Typography>
                 <Field name="Candidate Name">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
@@ -202,7 +202,7 @@ const JobCreate: React.FC = () => {
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <WorkOutlineIcon sx={{ color: 'white' }} />
+                            <WorkOutlineIcon sx={{ color: '#000' }} />
                           </InputAdornment>
                         ),
                         sx: gradientInputSx,
@@ -217,7 +217,7 @@ const JobCreate: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Phone Number</Typography>
+                <Typography sx={{ color: '#000', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Phone Number</Typography>
                 <Field name="Phone_Number">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
@@ -237,7 +237,7 @@ const JobCreate: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Experience</Typography>
+                <Typography sx={{ color: '#000', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Experience</Typography>
                 <Field name="Experience">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
@@ -258,7 +258,7 @@ const JobCreate: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Email</Typography>
+                <Typography sx={{ color: '#000', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Email</Typography>
                 <Field name="Email">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
@@ -279,7 +279,7 @@ const JobCreate: React.FC = () => {
               </Box>
 
               <Box sx={{ position: 'relative', width: '100%',gridColumn: '1 / -1' }}>
-              <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Resume</Typography>
+              <Typography sx={{ color: '#000', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Resume</Typography>
       <input
         id="file-upload"
         type="file"
@@ -304,7 +304,7 @@ const JobCreate: React.FC = () => {
             transition: '0.3s',
             border: '2px dashed rgba(255,255,255,0.4)',
             '&:hover': {
-              borderColor: 'white',
+              borderColor: '#000',
               boxShadow: '0 0 10px rgba(255,255,255,0.2)',
             },
           }}
@@ -327,8 +327,8 @@ const JobCreate: React.FC = () => {
                 <Button
                   variant="outlined"
                   sx={{
-                    color: 'white',
-                    borderColor: 'white',
+                    color: '#000',
+                    borderColor: '#000',
                     fontWeight: 600,
                     borderRadius: 2,
                     px: 4,
@@ -348,7 +348,7 @@ const JobCreate: React.FC = () => {
                   disabled={isSubmitting}
                   sx={{
                     background: 'linear-gradient(90deg, #3a6ea5 0%, #6B73FF 100%)',
-                    color: 'white',
+                    color: '#000',
                     fontWeight: 600,
                     borderRadius: 2,
                     px: 4,

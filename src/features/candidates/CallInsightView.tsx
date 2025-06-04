@@ -40,7 +40,7 @@ const CallInsightView: React.FC = () => {
   const totalScore = mockInsights.reduce((sum, row) => sum + row.score, 0);
 
   return (
-    <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 }, fontFamily: `'Montserrat', sans-serif` }}>
+    <Box sx={{ background: '#F4F2EE', minHeight: '100vh', p: { xs: 2, md: 2 }, fontFamily: `'Montserrat', sans-serif` }}>
       {/* Candidate Info Card */}
       <GradientCard gradient="linear-gradient(135deg, #395A84 0%, #4C277F 100%)" sx={{ p: 4, borderRadius: 4, boxShadow: 6, mb: 4, position: 'relative' }}>
         <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 28, mb: 1 }}>{candidate.name}</Typography>

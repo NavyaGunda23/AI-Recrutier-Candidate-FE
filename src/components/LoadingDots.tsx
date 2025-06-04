@@ -8,7 +8,7 @@ const FullScreenLoaderOverlay = styled(Box)({
   left: 0,
   width: '100%',
   height: '100%',
-  background: 'linear-gradient(135deg, #395A84 0%, #4C277F 100%)', // Semi-transparent dark background
+  background: 'linear-gradient(135deg, #F4F2EE 0%, #F4F2EE 100%)', // Semi-transparent dark background
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -21,7 +21,7 @@ const LoadingDots: React.FC = () => {
       {/* You can replace CircularProgress with a custom loading dots animation */}
       {/* <CircularProgress sx={{ color: '#a084e8' }} /> */}
       {/* Example of simple text dots (can be animated with CSS) */}
-       <Typography variant="h5" sx={{ color: 'white', ml: 2 }}>Loading...</Typography>
+       <Typography variant="h5" sx={{ color: '#000', ml: 2 }}>Loading...</Typography>
     </FullScreenLoaderOverlay>
   );
 };
