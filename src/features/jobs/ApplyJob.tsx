@@ -12,7 +12,7 @@ import { createFolderInSharedFolder } from '@/createFolderInSharedFolder';
 
 const JobSchema = Yup.object().shape({
   'Candidate Name': Yup.string().required('Required'),
-  Phone_Number: Yup.string().required('Required'),
+  Phone_Number: Yup.string().required('Required').matches(/^\d{9}$/, 'Phone number must be exactly 9 digits'),
   Experience: Yup.number().required('Required').min(0),
   Email: Yup.string().email('Invalid email').required('Required'),
   File: Yup.mixed().required('File is required'),
@@ -77,6 +77,34 @@ const JobCreate: React.FC = () => {
     const file = e.target.files?.[0];
     setPdfFile(file || null);
   };
+const [ candidateList, setCandidateList] = useState<any[]>([])
+
+  const checkCandidateExist =async (mobilenumbder:any) =>{
+    const formatedmnumber = '+971' + mobilenumbder
+    const airtableResponse:any = await axios.get(
+      'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/CandidateList',
+      {
+        headers: {
+          Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    console.log("airtableResponse",airtableResponse)
+
+    const records = airtableResponse?.data?.records || [];
+
+    const data = records.map((record: any) => ({
+      id: record.id,
+      createdTime: record.createdTime,
+      ...record.fields
+    }));
+
+    const candidateExit = data.filter((records:any) =>  records.Phone_Number == formatedmnumber)
+   
+    setCandidateList(data)
+    return candidateExit.length > 0 ? true : false
+  }
 
   const handleUpload = async () => {
     if (!pdfFile || !folderId) {
@@ -92,7 +120,7 @@ const JobCreate: React.FC = () => {
       setUploadStatus('Uploading...');
       // 'https://innova-recruiter-candidate.darkube.app
 
-     
+
       const response = await fetch('https://sharepoint-api-recruiter.wonderfulmoss-ad1f6e96.uaenorth.azurecontainerapps.io/api/upload-to-created-folder', {
         method: 'POST',
         body: formData
@@ -118,7 +146,7 @@ const JobCreate: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 1 }, fontFamily: `'Montserrat', sans-serif` }}>
       <Typography sx={{ color: '#000', fontWeight: 400, fontSize: 20, mb: 4, fontFamily: 'Montserrat' }}>
-        Create a New job
+       Apply job
       </Typography>
       <Formik
         initialValues={initialValues}
@@ -126,6 +154,12 @@ const JobCreate: React.FC = () => {
         onSubmit={async (values, { setSubmitting, setStatus }) => {
           try {
             // First upload the file
+            const checkCandidate = await checkCandidateExist(values.Phone_Number)
+            if(checkCandidate){
+              setStatus(`Sorry You've already applied to this job.`);
+              setUploadStatus('❌ Application submission failed');
+              return 
+            }
             const uploadResult:any = await handleUpload();
             if (!uploadResult?.success) {
               setStatus('File upload failed. Please try again.');
@@ -139,7 +173,7 @@ const JobCreate: React.FC = () => {
                 {
                   fields: {
                     'Candidate Name': values['Candidate Name'],
-                    'Phone_Number': values.Phone_Number,
+                    'Phone_Number': '+971' + `${values.Phone_Number}`,
                     'Experience': values.Experience,
                     'Email': values.Email,
                     'Resume': uploadResult.file.name,
@@ -149,16 +183,17 @@ const JobCreate: React.FC = () => {
                 }
               ]
             };
-
             // Submit to Airtable
             const airtableResponse = await axios.post(
-              'https://api.airtable.com/v0/appeH3LWtVbw0DDIv/Candidates',
+              'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/CandidateList',
               data,
               {
                 headers: {
-                  Authorization: `Bearer pate5F34PFXKdUFUU.2849c608f23ec107a0cc07b3fc92c2031e37f1b28c68026d23475ddd9bb1d9ae`,
-                  'Content-Type': 'application/json',
-                },
+                  Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
+                  'Content-Type': 'application/json'
+                }
+
+                
               }
             );
 
@@ -219,22 +254,33 @@ const JobCreate: React.FC = () => {
               <Box>
                 <Typography sx={{ color: '#000', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Phone Number</Typography>
                 <Field name="Phone_Number">
-                  {({ field, meta }: FieldProps) => (
-                    <MuiTextField
-                      {...field}
-                      placeholder="Enter phone number"
-                      fullWidth
-                      InputProps={{
-                        sx: gradientInputSx,
-                      }}
-                      error={meta.touched && !!meta.error}
-                      helperText={meta.touched && meta.error}
-                      FormHelperTextProps={{
-                        sx: { color: 'red', mt: 1 },
-                      }}
-                    />
-                  )}
-                </Field>
+  {({ field, meta }: FieldProps) => (
+    <MuiTextField
+      {...field}
+      placeholder="50 123 4567"
+      fullWidth
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start" sx={{ color: 'white', fontWeight: 500 }}>
+            +971
+          </InputAdornment>
+        ),
+        sx: gradientInputSx,
+      }}
+      inputProps={{
+        inputMode: 'numeric',
+        pattern: '[0-9]*',
+        maxLength: 9, // UAE numbers typically have 9 digits after +971
+      }}
+      error={meta.touched && !!meta.error}
+      helperText={meta.touched && meta.error}
+      FormHelperTextProps={{
+        sx: { color: 'red', mt: 1 },
+      }}
+    />
+  )}
+</Field>
+
               </Box>
               <Box>
                 <Typography sx={{ color: '#000', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Experience</Typography>
