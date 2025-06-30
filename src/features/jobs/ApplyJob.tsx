@@ -9,6 +9,7 @@ import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import type { SelectChangeEvent } from '@mui/material';
 import type { FieldProps } from 'formik';
 import { createFolderInSharedFolder } from '@/createFolderInSharedFolder';
+import { supabase } from '@/lib/SupabaseClient';
 
 const JobSchema = Yup.object().shape({
   'Candidate Name': Yup.string().required('Required'),
@@ -69,6 +70,7 @@ const gradientInputSx = {
 const JobCreate: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const jobId = searchParams.get('jobID');
   const folderId = searchParams.get('folderId');
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -80,19 +82,16 @@ const JobCreate: React.FC = () => {
 const [ candidateList, setCandidateList] = useState<any[]>([])
 
   const checkCandidateExist =async (mobilenumbder:any) =>{
-    const formatedmnumber = '+971' + mobilenumbder
-    const airtableResponse:any = await axios.get(
-      'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/CandidateList',
-      {
-        headers: {
-          Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-    console.log("airtableResponse",airtableResponse)
+    const formatedmnumber = '+971' + mobilenumbder;
+    const Positionlist:any = await supabase.from('Recruter_Job_Role').select('*').eq('id', jobId);
+    const positionName = Positionlist?.data[0].Position
+    const positionId = Positionlist?.data[0].id
+    const candidateLists = await supabase.from('CandidateList').select('*');
 
-    const records = airtableResponse?.data?.records || [];
+   
+    console.log("airtableResponse",candidateLists)
+
+    const records = candidateLists?.data || [];
 
     const data = records.map((record: any) => ({
       id: record.id,
@@ -100,9 +99,9 @@ const [ candidateList, setCandidateList] = useState<any[]>([])
       ...record.fields
     }));
 
-    const candidateExit = data.filter((records:any) =>  records.Phone_Number == formatedmnumber)
+    const candidateExit = records.filter((records:any) =>  records.Phone_Number == formatedmnumber && records.job_id == positionId)
    
-    setCandidateList(data)
+    setCandidateList(records)
     return candidateExit.length > 0 ? true : false
   }
 
@@ -169,35 +168,19 @@ const [ candidateList, setCandidateList] = useState<any[]>([])
 
             // Prepare the data for Airtable
             const data = {
-              records: [
-                {
-                  fields: {
-                    'Candidate Name': values['Candidate Name'],
-                    'Phone_Number': '+971' + `${values.Phone_Number}`,
-                    'Experience': values.Experience,
-                    'Email': values.Email,
-                    'Resume': uploadResult.file.name,
-                    'Resume_URL': uploadResult.file.webUrl || '',
-                    'Status': 'New Application'
-                  }
-                }
-              ]
+              'CandidateName': values['Candidate Name'],
+              'Phone_Number': '+971' + `${values.Phone_Number}`,
+              'Experience': values.Experience,
+              'Email': values.Email,
+              'Resume': uploadResult.file.name,
+              'Resume_URL': uploadResult.file.webUrl || '',
+              'job_id': Number(jobId)
             };
-            // Submit to Airtable
-            const airtableResponse = await axios.post(
-              'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/CandidateList',
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
-                  'Content-Type': 'application/json'
-                }
+            const airtableResponse = await supabase.from('CandidateList').insert(data);
+            console.log("data",airtableResponse)
+            
 
-                
-              }
-            );
-
-            if (airtableResponse.status === 200) {
+            if (airtableResponse.status === 201) {
               setUploadStatus('✅ Application submitted successfully!');
               setTimeout(() => {
                 navigate('/jobs/list');

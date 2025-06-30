@@ -3,6 +3,7 @@ import { Box, Typography, Button, Chip } from '@mui/material';
 import GradientCard from '@/components/GradientCard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/SupabaseClient';
 
 
 // Mock job data
@@ -45,38 +46,26 @@ const JobList: React.FC = () => {
   const [error, setError] = useState(null);
 
   const fetchRecords = async () => {
-    try {
-      const response = await fetch(
-        'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblAz9PFQthvbxaHu',
-        {
-          headers: {
-            Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-  
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-  
-      const data = await response.json();
-  
-      // Map Airtable records into your desired format
-      const jobs = data.records.map((record:any) => ({
-        id: record.id,
-        title: record.fields.Position || '',
-        location: record.fields.Location.join(' ') || '',
-        salary: record.fields.Salary || '',
-        type: record.fields["Onsite/Remote"].join(' ') || '',
-        oneDriveFolderID:record.fields.oneDriveFolderID || ""
-      }));
-  
-      setRecords(jobs);
-    } catch (err) {
-      console.error('Error:', err);
-      // setError(err?.message);
+
+
+    const data = await supabase.from('Recruter_Job_Role').select('*');
+    console.log("data",data)
+    if(data.error){
+     throw new Error('Failed to fetch data');
     }
+    // setRecordsInfo(data.data)
+    // Map Airtable records into your desired format
+    const jobs = data.data.map((record:any) => ({
+      id: record.id,
+      title: record.Position || '',
+      location: record.Location || '',
+      salary: record.Salary || '',
+      type: record["Onsite_Remote"] || '',
+      oneDriveFolderID: record.oneDriveFolderID || ""
+    }));
+
+    setRecords(jobs);
+
   };
 
 
@@ -134,7 +123,7 @@ const JobList: React.FC = () => {
                 width:"fit-content",
                 '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
               }}
-              onClick={() => navigate(`/jobs/create?folderId=${job?.oneDriveFolderID}`)            }
+              onClick={() => navigate(`/jobs/create?jobID=${job?.id}&folderId=${job?.oneDriveFolderID}`)            }
             >
               Apply Job
             </Button>
