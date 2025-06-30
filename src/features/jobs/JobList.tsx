@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabaseClient';
 
 
 
+
 // Mock job data
 const jobs = [
   {
