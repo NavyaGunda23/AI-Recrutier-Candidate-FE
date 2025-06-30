@@ -3,7 +3,8 @@ import { Box, Typography, Button, Chip } from '@mui/material';
 import GradientCard from '@/components/GradientCard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/lib/SupabaseClient';
+import { supabase } from '@/lib/supabaseClient';
+
 
 
 // Mock job data
