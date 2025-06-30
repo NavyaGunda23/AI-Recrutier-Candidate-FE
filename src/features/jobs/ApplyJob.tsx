@@ -9,7 +9,7 @@ import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import type { SelectChangeEvent } from '@mui/material';
 import type { FieldProps } from 'formik';
 import { createFolderInSharedFolder } from '@/createFolderInSharedFolder';
-import { supabase } from '@/lib/SupabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 
 const JobSchema = Yup.object().shape({
   'Candidate Name': Yup.string().required('Required'),
