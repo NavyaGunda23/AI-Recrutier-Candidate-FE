@@ -49,8 +49,10 @@ const JobList: React.FC = () => {
 
   const fetchRecords = async () => {
 
-
-    const data = await supabase.from('Recruter_Job_Role').select('*');
+    const data = await supabase
+    .from('Recruter_Job_Role')
+    .select('*');
+   
     console.log("data",data)
     if(data.error){
      throw new Error('Failed to fetch data');
@@ -59,11 +61,11 @@ const JobList: React.FC = () => {
     // Map Airtable records into your desired format
     const jobs = data.data.map((record:any) => ({
       id: record.id,
-      title: record.Position || '',
-      location: record.Location || '',
-      salary: record.Salary || '',
-      type: record["Onsite_Remote"] || '',
-      oneDriveFolderID: record.oneDriveFolderID || ""
+      title: record.position || '',
+      location: record.location || '',
+      salary: record.salary || '',
+      type: record["onsiteRemote"] || '',
+      oneDriveFolderID: record.oneDriveFolderId || "",
     }));
 
     setRecords(jobs);
@@ -125,7 +127,7 @@ const JobList: React.FC = () => {
                 width:"fit-content",
                 '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
               }}
-              onClick={() => navigate(`/jobs/create?jobID=${job?.id}&folderId=${job?.oneDriveFolderID}`)            }
+              onClick={() => navigate(`/jobs/create?jobID=${job?.id}`)            }
             >
               Apply Job
             </Button>

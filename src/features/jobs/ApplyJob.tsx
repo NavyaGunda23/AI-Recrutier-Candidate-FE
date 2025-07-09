@@ -1,4 +1,4 @@
-import React, { useState, type ChangeEvent } from 'react';
+import React, { useEffect, useState, type ChangeEvent } from 'react';
 import { Box, Typography, Button, InputAdornment, MenuItem, Select, OutlinedInput, Chip, TextField as MuiTextField } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-mui';
@@ -74,7 +74,27 @@ const JobCreate: React.FC = () => {
   const folderId = searchParams.get('folderId');
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+const [specifcRecord, setSpecifcRecord] = useState<any>()
 
+  const renderSpecificJobRole = async() =>{
+    const Positionlist:any = await supabase.from('Recruter_Job_Role').select(`
+      id,
+      position,
+      location,
+      salary,
+      onsiteRemote,
+      oneDriveFolderId,
+      companyId,
+      CompanyList(
+      companyName)
+    `).eq('id', jobId);
+      console.log("specifcRecord",Positionlist)
+    setSpecifcRecord(Positionlist?.data?.[0])
+  }
+
+  useEffect(()=>{
+    renderSpecificJobRole()
+  },[jobId])
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setPdfFile(file || null);
@@ -84,8 +104,8 @@ const [ candidateList, setCandidateList] = useState<any[]>([])
   const checkCandidateExist =async (mobilenumbder:any) =>{
     const formatedmnumber = '+971' + mobilenumbder;
     const Positionlist:any = await supabase.from('Recruter_Job_Role').select('*').eq('id', jobId);
-    const positionName = Positionlist?.data[0].Position
-    const positionId = Positionlist?.data[0].id
+    const positionName = specifcRecord.position
+    const positionId = specifcRecord.id
     const candidateLists = await supabase.from('CandidateList').select('*');
 
    
@@ -105,40 +125,96 @@ const [ candidateList, setCandidateList] = useState<any[]>([])
     return candidateExit.length > 0 ? true : false
   }
 
+
+  
+
+  const handleSupabaseFileUpload = async (
+    bucketName: string,
+    folderPath: string,
+    pdfFile: any,
+    fileName:string
+  ) => {
+    const filePath = `${folderPath}/${fileName}`;
+  
+
+    const { data: existingFile, error: downloadError } = await supabase.storage
+    .from(bucketName)
+    .download(filePath);
+
+    if(!downloadError){
+      console.warn(`File "${filePath}" already exists in bucket "${bucketName}".`);
+      return { success: false, error: { message: "File already exists." } };
+    }
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(filePath, pdfFile, {
+        contentType: pdfFile.type,
+        upsert: true, // or false, depending on if overwrite is okay
+      });
+  
+    if (error) {
+      console.error('Error uploading PDF:', error.message);
+      return { success: false, error };
+    }
+  
+    return { success: true, data };
+  };
+  const sanitizeFilename = (name: string): string => {
+    return name
+      // Remove invalid characters
+      .replace(/[\\\/\r\n\t\b\f\*\?"<>\|:\(\)]/g, '')  // Remove disallowed characters
+      // Replace multiple dots with a single one
+      .replace(/\.{2,}/g, '.')
+      // Replace multiple spaces with a single space
+      .replace(/\s{2,}/g, ' ')
+      // Trim leading/trailing spaces and dots
+      .trim()
+      .replace(/^[\s.]+|[\s.]+$/g, '');
+  };
   const handleUpload = async () => {
-    if (!pdfFile || !folderId) {
+    if (!pdfFile ) {
       setUploadStatus('Please select a PDF file and provide a folder ID.');
       return { success: false };
     }
 
-    const formData = new FormData();
-    formData.append('pdfFile', pdfFile);
-    formData.append('folderId', folderId);
+    const sanitizedFileName = sanitizeFilename(pdfFile.name);
+  console.log("sanitizedFileName", sanitizedFileName);
+
+  // 🔧 Create a new File object with sanitized name
+  const sanitizedFile = new File([pdfFile], sanitizedFileName, {
+    type: pdfFile.type,
+  });
+
+  const formData = new FormData();
+  formData.append('pdfFile', sanitizedFile); // ✅ use the renamed file
 
     try {
       setUploadStatus('Uploading...');
-      // 'https://innova-recruiter-candidate.darkube.app
-
-
-      const response = await fetch('https://sharepoint-api-recruiter.wonderfulmoss-ad1f6e96.uaenorth.azurecontainerapps.io/api/upload-to-created-folder', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setUploadStatus(`❌ Error: ${errorData.details || 'Upload failed'}`);
-        return { success: false };
+      const bucketName = specifcRecord.CompanyList?.companyName;
+      const folderPath = specifcRecord.position;
+    
+      if (!bucketName || !folderPath) {
+        setUploadStatus('Missing bucket name or folder path.');
+        return;
+      }
+    
+      const uploadsupbaseFile:any = await handleSupabaseFileUpload(bucketName, folderPath, formData,sanitizedFileName);
+   if (!uploadsupbaseFile.success) {
+      
+        setUploadStatus(`❌ Error: Error in uploading the file`);
+        return { success: false, error:uploadsupbaseFile?.error };
+      }
+      else{
+          setUploadStatus(`✅ Uploaded: `);
+    //   console.log('Upload successful:', result);
+      return { success: true, data: uploadsupbaseFile?.data,fileName:sanitizedFileName};
       }
 
-      const result = await response.json();
-      setUploadStatus(`✅ Uploaded: ${result.uploadedFile.name}`);
-      console.log('Upload successful:', result);
-      return { success: true, file: result.uploadedFile };
+
     } catch (error) {
       console.error('Unexpected error:', error);
-      setUploadStatus('❌ Upload failed due to a network error.');
-      return { success: false };
+      // setUploadStatus('❌ Upload failed due to a network error.');
+      // return { success: false };
     }
   };
 
@@ -161,20 +237,21 @@ const [ candidateList, setCandidateList] = useState<any[]>([])
             }
             const uploadResult:any = await handleUpload();
             if (!uploadResult?.success) {
-              setStatus('File upload failed. Please try again.');
+              setStatus(uploadResult?.error?.message ? uploadResult?.error?.message : 'File upload failed. Please try again.');
               setSubmitting(false);
               return;
             }
 
             // Prepare the data for Airtable
             const data = {
-              'CandidateName': values['Candidate Name'],
-              'Phone_Number': '+971' + `${values.Phone_Number}`,
-              'Experience': values.Experience,
-              'Email': values.Email,
-              'Resume': uploadResult.file.name,
-              'Resume_URL': uploadResult.file.webUrl || '',
-              'job_id': Number(jobId)
+              'candidateName': values['Candidate Name'],
+              'phoneNumber': '+971' + `${values.Phone_Number}`,
+              'experience': values.Experience,
+              'email': values.Email,
+              'resume': uploadResult.fileName,
+              'resumeUrl': uploadResult.data.fullPath || '',
+              'jobId': Number(jobId),
+              'companyId':Number(specifcRecord?.companyId)
             };
             const airtableResponse = await supabase.from('CandidateList').insert(data);
             console.log("data",airtableResponse)
