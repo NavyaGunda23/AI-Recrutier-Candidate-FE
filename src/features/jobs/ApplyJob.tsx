@@ -422,7 +422,7 @@ const [ candidateList, setCandidateList] = useState<any[]>([])
           {/* <Typography fontSize={16} fontWeight={500}>
             Click to upload PDF
           </Typography> */}
-          <Typography fontSize={12} color="rgba(255,255,255,0.7)">
+          <Typography fontSize={12} color="#6472f1">
             Only .pdf files are supported
           </Typography>
         </Box>
