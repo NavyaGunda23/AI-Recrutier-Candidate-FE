@@ -51,7 +51,8 @@ const JobList: React.FC = () => {
 
     const data = await supabase
     .from('Recruter_Job_Role')
-    .select('*');
+    .select('*')
+    .eq('isPublished', true);
    
     console.log("data",data)
     if(data.error){
