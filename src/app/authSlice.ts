@@ -1,20 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+
 export interface AuthState {
   organization: string | null;
-  username: string | null;
+  password: string | null;
+  userName: string | null;
   isAuthenticated: boolean;
+  reEnterPassword: string | null;
+  companyId:string | null;
+  companyName:string | null;
 }
 
 const defaultOrg = 'Innovasense';
-const defaultUser = 'admin';
+const defaultUser = 'Awdfyhi864@!';
 
 const persisted = localStorage.getItem('auth');
 const initialState: AuthState =
   persisted
     ? JSON.parse(persisted)
-    : { organization: null, username: null, isAuthenticated: false };
+    : { organization: null, password: null, isAuthenticated: false };
 
 const authSlice = createSlice({
   name: 'auth',
@@ -22,30 +27,39 @@ const authSlice = createSlice({
   reducers: {
     login: (
       state,
-      action: PayloadAction<{ organization: string; username: string }>
+      action: PayloadAction<{ userName: string; password: string,companyId:string,companyName:string }>
     ) => {
-      state.organization = action.payload.organization;
-      state.username = action.payload.username;
-      state.isAuthenticated =
-        action.payload.organization === defaultOrg &&
-        action.payload.username === defaultUser;
-      localStorage.setItem(
-        'auth',
-        JSON.stringify({
-          organization: state.organization,
-          username: state.username,
-          isAuthenticated: state.isAuthenticated,
-        })
-      );
+      state.userName = action.payload.userName;
+      state.password = action.payload.password;
+      state.companyId = action.payload.companyId;
+      state.companyName = action.payload.companyName;
+      state.isAuthenticated = true
     },
+
+    signup: (
+      state,
+      action: PayloadAction<{
+        organization: string;
+        userName: string;
+        password: string;
+        reEnterPassword: string;
+      }>
+    ) => {
+      const { organization, userName, password, reEnterPassword } = action.payload;
+
+      if (password !== reEnterPassword) {
+        throw new Error("Passwords do not match");
+      }
+    },
+
     logout: (state) => {
       state.organization = null;
-      state.username = null;
+      state.password = null;
       state.isAuthenticated = false;
       localStorage.removeItem('auth');
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout , signup} = authSlice.actions;
 export default authSlice.reducer;

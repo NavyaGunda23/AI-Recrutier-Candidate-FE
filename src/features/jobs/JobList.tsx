@@ -4,6 +4,8 @@ import GradientCard from '@/components/GradientCard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/app/store';
 
 
 
@@ -46,13 +48,15 @@ const JobList: React.FC = () => {
 
   const [records, setRecords] = useState<Job[]>([]);
   const [error, setError] = useState(null);
+  const comapnyId = useSelector((state:RootState) => state?.auth?.companyId)
 
   const fetchRecords = async () => {
 
     const data = await supabase
     .from('Recruter_Job_Role')
     .select('*')
-    .eq('isPublished', true);
+    .eq('isPublished', true)
+    .eq('companyId', comapnyId);
    
     console.log("data",data)
     if(data.error){
@@ -90,7 +94,7 @@ const JobList: React.FC = () => {
       
       </Box>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr' }, gap: 5, justifyContent: 'flex-start', alignItems: 'flex-start', mt: 4 }}>
-       {records.length  == 0  && <p style={{color:"white"}}>No jobs created</p>}
+       {records.length  == 0  && <p style={{color:"black"}}>No jobs created</p>}
         {records.map((job:any) => (
           <GradientCard
             key={job.id}

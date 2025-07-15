@@ -43,9 +43,9 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
       {/* Top AppBar */}
       <AppBar position="static" sx={{ backgroundColor: '#fff', fontFamily: `'Montserrat', sans-serif` }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 ,justifyContent:'space-between',width:"100%"}}>
             <img src={LinkeDIn} alt="Innovasense Logo" style={{ width: 100 }} onClick={()=> navigate("/jobs/list")} />
-         
+            <Typography sx={{color:"#0875d3",fontSize:"16px",fontWeight:"bold",cursor:"pointer"}} onClick={()=> handleLogout()}>Logout</Typography>
           </Box>
 
      
